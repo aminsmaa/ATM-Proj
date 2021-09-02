@@ -1,0 +1,182 @@
+from math import cos
+import random
+import time
+
+costomers = {
+    '123':{
+        'name':'Amin Abtahi',
+        'balance':100.00,
+        'PIN':'1445'
+    },
+    '234':{
+        'name':'Naser Abtahi',
+        'balance':200.00,
+        'PIN':'4356'
+    }
+}
+
+try_number = 3
+
+ID_code = input('welcome \nif you already have an account,Please enter your ID-Number: \nif you doesn\'t, enter 0\n>> ')
+if (ID_code != '0') and (ID_code != 'm') :
+    PIN_number = input('enter you Pin Number: ')
+
+    while try_number!=0:
+        if ID_code in costomers.keys():
+            if (PIN_number == costomers.get(ID_code).get('PIN')):
+                print('enter successfully')
+                break
+            else:
+                print('wrong PIN, try again')
+                PIN_number = input('enter you Pin Number: ')
+                try_number -=1
+        else:
+            print('SORRY you don\'t have an account!')
+            exit()
+        
+
+    if try_number == 0:
+        print('entered wron PIN 3 times, your account is BLOCK now!')
+        exit()
+    
+elif ID_code == 'm':
+    command = input('to see all costomers informations enter 1 ')
+    print(costomers)
+else:
+    new_Name = input('we are glad for your choise, please enter your full name: >> ')
+    new_Password = input('now please enter a 4-digit password for your account: >> ')
+    while (len(new_Password) < 4):
+        new_Password = input('incorrect password, enter again: >> ') 
+    base_Balance = float(input('how much do you want to deposit for the first time? >> $'))
+    new_ID = str(random.randrange(100,999,1))
+    anID = ''
+    while (new_ID != (anID in costomers.keys())) == False:
+        new_ID = str(random.randrange(100,999,1))
+    print('please wait...')
+    costomers[new_ID] = {
+        'name': new_Name,
+        'balance':base_Balance,
+        'PIN':new_Password
+    }
+    time.sleep(2)
+    print(f'making account done SUCCESSFULLY! your account number is: {new_ID} \n')
+    ID_code = new_ID
+    PIN_number = new_Password
+
+
+do_Continue = True
+while do_Continue:
+    print('chose your choice: ')
+    print('enter   1 for withdrow \n\t2 for see balance \n\t3 for deposit \n\t4 for transfering money \n\t5 for chenge the account')
+    print('\t6 for open up an account \n\tand enter q for quit')
+    # print(f'id= {ID_code} and pin= {PIN_number}')
+    choise = input()
+    # print(choise)
+    if choise == 'q':
+        do_Continue = False
+        print('We hope to see you again! \t Bye!')
+    else:
+        # print('code entered is:' ,choise)
+        if choise=='1':
+            withdrow = float(input('how much do you want to withdrow? $'))
+            while withdrow > costomers.get(ID_code).get('balance'):
+                withdrow = float(input('you donn\'t have that much money! enter again: $'))
+            costomer_account = costomers.pop(ID_code)
+            costomers[ID_code] = costomer_account
+            current_balance = costomer_account.pop('balance')
+            new_balance = current_balance - withdrow
+            costomer_account['balance'] = new_balance
+            print(f'withdrow sucessfully,  your new balamce is: {new_balance}$')
+
+        elif choise=='2':
+            costomer_account = costomers.pop(ID_code)
+            costomers[ID_code] = costomer_account
+            current_balance = costomer_account.pop('balance')
+            costomer_account['balance']=current_balance
+            print(f'your account balance is: {current_balance}$')
+
+        elif choise=='3':
+            deposit_amount=float(input('how much do you want to Deposit: $'))
+            # costomers[ID_code['balance']] += deposit_amount
+            costomer_account = costomers.pop(ID_code)
+            costomers[ID_code] = costomer_account
+            current_balance = costomer_account.pop('balance')
+            new_balance = current_balance + deposit_amount
+            costomer_account['balance'] = new_balance
+            print(f'deposit has done sucessfully, your new balance is: {new_balance}$')
+
+        elif choise=='4':
+            dest_ID = input('enter the ID-Number of your destination account: ')
+            while (dest_ID in costomers) == False:
+                dest_ID = input('this account doesn\'t exist, try again: ')
+            while dest_ID == ID_code :
+                dest_ID = input('you can\'t deposit to your account, try another one: ')
+            money_Transfer = float(input('enter the amount of money you\'d like to transfer: $'))
+            while money_Transfer > costomers.get(ID_code).get('balance'):
+                money_Transfer = float(input('you donn\'t have that much money! enter again: $'))
+            costomer_account = costomers.pop(ID_code)
+            costomers[ID_code] = costomer_account
+            current_balance = costomer_account.pop('balance')
+            new_balance = current_balance - money_Transfer
+            costomer_account['balance'] = new_balance
+
+            costomer_account = costomers.pop(dest_ID)
+            costomers[dest_ID] = costomer_account
+            current_balance = costomer_account.pop('balance')
+            new_balance = current_balance + money_Transfer
+            costomer_account['balance'] = new_balance
+
+            print('transfer sucessful!!')
+        
+        elif choise=='5':
+            try_number = 3
+            ID_code = input('welcom, Please enter your ID-Number: ')
+            PIN_number = input('enter you Pin Number: ')
+
+            while try_number!=0:
+                if ID_code in costomers.keys():
+                    if (PIN_number in costomers.get(ID_code).get("PIN")):
+                        print('enter successfully')
+                        # print(costomers.get(ID_code).get("PIN"))
+                        # print(PIN_number)
+                        break
+                    else:
+                        print('wrong PIN, try again')
+                        PIN_number = "0"
+                        PIN_number = input('enter you Pin Number: ')
+                        try_number -=1
+                else:
+                    print('SORRY you don\'t have an account!')
+                    exit()
+                    break
+
+            if try_number == 0:
+                print('entered wrong PIN 3 times, your account is BLOCK now!')
+                exit()
+
+        elif choise == '6':
+            new_Name = input('please enter your full name: >> ')
+            new_Password = input('now please enter a 4-digit password for your account: >> ')
+            base_Balance = float(input('how much do you want to deposit for the first time? >> $'))
+            new_ID = str(random.randrange(100,999,1))
+            anID = ''
+            while (new_ID != (anID in costomers.keys())) == False:
+                new_ID = str(random.randrange(100,999,1))
+            print('please wait...')
+            costomers[new_ID] = {
+                'name': new_Name,
+                'balance':base_Balance,
+                'PIN':new_Password
+            }
+            time.sleep(2)
+            print(f'making account done SUCCESSFULLY! your account number is: {new_ID} \n')
+            ID_code = new_ID
+            PIN_number = new_Password
+
+        elif choise == 'm':
+            command = input('to see all costomers informations enter 1 ')
+            print(costomers)
+
+        else:
+            print('wrong input, try again!!')
+        
